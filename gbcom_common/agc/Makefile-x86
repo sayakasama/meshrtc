@@ -1,0 +1,41 @@
+root_path = ../..
+common_path = $(root_path)/common
+
+include_path = -I$(common_path) -I$(common_path)/h264 -I$(common_path)/pcm -I$(common_path)/agc  -I$(common_path)/queue \
+				-I$(common_path)/json -I$(common_path)/comm  
+
+obj-app-c = agc
+
+CFLAGS  =  -Wall -g $(include_path) -DLINUX_X86 -DAGC_SELF_TEST
+LDLIBS +=  -lm -lpthread -L/usr/local/lib -lopus
+LDFLAGS +=  
+
+MYSRC    = ${shell pwd}
+
+BIN_SRC=$(shell echo $(MYSRC)/*.c)
+
+OBJS_util = $(common_path)/utils.o
+OBJS_agc  = $(common_path)/agc/agc.o $(common_path)/agc/audio_agc.o
+
+NS_CXX_SRC=$(shell echo $(ns_path)/*.cc)
+NS_CXX_OBJS=$(patsubst %.cc, %.o, $(NS_CXX_SRC))  audio_ns.o 
+NS_C_SRC=$(shell echo $(ns_path)/*.c)
+NS_C_OBJS=$(patsubst %.c, %.o, $(NS_C_SRC))  
+
+OBJS_c=$(OBJS_util)  $(OBJS_agc)
+
+build: $(obj-app-c)
+
+$(obj-app-c):$(OBJS_c) 
+	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS) 
+	
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $^
+	
+install:
+	@echo "INSTALL       $(obj-app-c)"
+
+clean:
+	@echo "CLEAN         $(obj-app-c) "
+	@rm -rf *.o *.dat *.pcm $(OBJS_c) 
+	@rm -rf $(obj-app-c) 

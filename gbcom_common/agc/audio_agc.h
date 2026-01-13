@@ -1,0 +1,19 @@
+#ifndef  __AUDIO_AGC_H__
+#define  __AUDIO_AGC_H__
+
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void audio_agc_free();
+int  audio_agc_init(int gain, int targetDb, int sample_rate);
+int  audio_agc_proc(int16_t *data_in, uint32_t sampleRate, size_t samplesCount);
+////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef  __cplusplus
+}
+#endif
+
+
+#endif
